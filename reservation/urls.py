@@ -1,23 +1,17 @@
 from django.urls import path
 from django.views.decorators.cache import cache_page
-
-from reserv.apps import ReservConfig
 from django.conf import settings
 from django.conf.urls.static import static
-from reserv.views import views
-from django.views.decorators.cache import cache_page
-from catalog.views import ProductListView, ProductDetailView, HomeListView, ContactsListView, ProductCreateView, \
-    ProductUpdateView, ProductDeleteView
+from . import views
+from .apps import ReservationConfig
 
-app_name = CatalogConfig.name
+app_name = ReservationConfig.name
 
-urlpatterns = ([
-                   path("", HomeListView.as_view(), name="home"),
-                   path("contacts/", ContactsListView.as_view(), name="contacts"),
-                   path('table_list/', ProductListView.as_view(), name='table_list'),
-                   path('products/<int:pk>/', cache_page(60)(ProductDetailView.as_view()), name='table_detail'),
-                   path('products/create/', ProductCreateView.as_view(), name='table_create'),
-                   path('products/<int:pk>/delete/', ProductDeleteView.as_view(), name='table_delete')
-               ]
-
-               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+urlpatterns = [
+    path("", views.HomeListView.as_view(), name="home"),
+    path("contacts/", views.ContactsListView.as_view(), name="contacts"),
+    path("table_list/", views.TableListView.as_view(), name="table_list"),
+    path("tables/<int:pk>/", cache_page(60)(views.TableDetailView.as_view()), name="table_detail"),
+    path("tables/create/", views.TableCreateView.as_view(), name="table_create"),
+    path("tables/<int:pk>/delete/", views.TableDeleteView.as_view(), name="table_delete"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

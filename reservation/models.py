@@ -2,13 +2,18 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
+
+
 class Table(models.Model):
-    table_number = models.IntegerField(unique=True, validators=[MinValueValidator(1)])
-    capacity = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(20)])
+    table_number = models.IntegerField(unique=True)
+    capacity = models.IntegerField()
     is_available = models.BooleanField(default=True)
+    location = models.CharField(max_length=100, blank=True, null=True)  # Добавлено поле
+    image = models.ImageField(upload_to='tables/', blank=True, null=True)
 
     def __str__(self):
-        return f"Table {self.table_number} (Capacity: {self.capacity})"
+        return f"Table {self.table_number}"
+
 
 class Reservation(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE, related_name='reservations')
