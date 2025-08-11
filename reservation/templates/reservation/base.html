@@ -1,51 +1,57 @@
-<!doctype html>
+{% load static %}
+
 <html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Магазин</title>
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ресторан{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-{% include 'reservation/includes/inc_menu.html' %}
-{% block content %}
-{% endblock %}
 
-<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <footer class="pt-4 my-md-5 pt-md-5 border-top">
-        <div class="row">
-            <div class="col-12 col-md">
-                MilyaevAA
-                <small class="d-block mb-3 text-muted">&copy; 2024</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Категории</h5>
+  <header class="text-white text-center py-5"
+          style="background-image: url('{% static 'reservation/img/header.jpg' %}');
+                 background-size: cover; background-position: center;">
+    <h1>Добро пожаловать в наш ресторан</h1>
+  </header>
 
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Рассылки</a></li>
-                    <li><a class="text-muted" href="#">Телеграм боты</a></li>
-                    <li><a class="text-muted" href="#">Полезные утилиты</a></li>
-                    <li><a class="text-muted" href="#">Веб-приложения</a></li>
-                    <li><a class="text-muted" href="#">Микросервисы</a></li>
 
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Дополнительно</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Мы пишем</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>О нас</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="/contacts/">Контакты</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-</div>
-<script src="/static/js/bootstrap.bundle.min.js"></script>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'reservation/img/logo.png' %}" alt="Логотип" height="40">
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:home' %}">Главная</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:about' %}">О ресторане</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:booking' %}">Бронирование</a></li>
+          {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Личный кабинет</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Выйти</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Войти</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <main class="container py-4">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+
+  <footer class="bg-dark text-white text-center py-3">
+    <p>© 2025 Наш Ресторан</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

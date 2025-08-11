@@ -1,13 +1,14 @@
-from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from users.apps import UsersConfig
-from users.views import UserCreateView, email_verification
+from . import views
+from django.contrib.auth.views import LogoutView
 
-app_name = UsersConfig.name
+app_name = 'users'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('register/', UserCreateView.as_view(), name='register'),
-    path('email-confirm/<str:token>/', email_verification, name='email-confirm'),
+    path('register/', views.register_view, name='register'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('login/', views.login_view, name='login'),
+    path('profile/', views.profile_view, name='profile'),
+    path('edit/<int:pk>/', views.edit_reservation, name='edit_reservation'),
+    path('cancel/<int:pk>/', views.cancel_reservation, name='cancel_reservation'),
 ]

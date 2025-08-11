@@ -1,0 +1,32 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+{% block content %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронирование</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<h1>Бронирование столика</h1>
+
+<h2>Доступные столики</h2>
+<ul>
+    {% for table in available_tables %}
+        <li>Стол №{{ table.number }} — {{ table.seats }} мест</li>
+    {% endfor %}
+</ul>
+
+<h2>Заполните форму</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Забронировать</button>
+</form>
+
+{% for message in messages %}
+    <p style="color:red;">{{ message }}</p>
+{% endfor %}
+</body>
+</html>
+{% endblock %}

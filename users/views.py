@@ -1,38 +1,58 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from reservation.models import Reservation
+from reservation.forms import ReservationForm
 
-from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView
-
-#from config.settings import EMAIL_HOST_USER
-from users.forms import UserRegisterForm
-from users.models import User
-
-
-class UserCreateView(CreateView):
-    model = User
-    form_class = UserRegisterForm
-    success_url = reverse_lazy('users:login')
-
-    def form_valid(self, form):
-        user = form.save()
-        user.is_active = False
-        token = secrets.token_hex(16)
-        user.token = token
-        user.save()
-        host = self.request.get_host()
-        url = f'http://{host}/users/email-confirm/{token}'
-        send_mail(
-            subject='Подтверждение почты',
-            message=f'Для регистрации перейдите по ссылке {url}',
-#            from_email=EMAIL_HOST_USER,
-            recipient_list=[user.email]
-        )
-        return super().form_valid(form)
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('users:profile')
+    else:
+        form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
 
 
-def email_verification(request, token):
-    user = get_object_or_404(User, token=token)
-    user.is_active = True
-    user.save()
-    return redirect(reverse('users:login'))
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect('users:profile')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'users/login.html', {'form': form})
+
+
+@login_required
+def profile_view(request):
+    reservations = Reservation.objects.filter(user=request.user).order_by('-reservation_time')
+    return render(request, 'users/profile.html', {'reservations': reservations})
+
+
+@login_required
+def edit_reservation(request, pk):
+    reservation = get_object_or_404(Reservation, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = ReservationForm(request.POST, instance=reservation)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Бронирование обновлено.')
+            return redirect('users:profile')
+    else:
+        form = ReservationForm(instance=reservation)
+    return render(request, 'users/edit_reservation.html', {'form': form})
+
+
+@login_required
+def cancel_reservation(request, pk):
+    reservation = get_object_or_404(Reservation, pk=pk, user=request.user)
+    reservation.status = 'cancelled'
+    reservation.save()
+    messages.success(request, 'Бронирование отменено.')
+    return redirect('users:profile')

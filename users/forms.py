@@ -1,9 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
+from restaurant.forms import StyleFormMixin
+from users.models import User
 
-from .models import User
 
-
-class UserRegisterForm(UserCreationForm):
+class UserRegisterForm(StyleFormMixin, UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'password1', 'password2')
+        fields = ("email", 'password1', 'password2')

@@ -1,56 +1,78 @@
-from django.views.generic import ListView, DetailView, CreateView, DeleteView
-from django.urls import reverse_lazy
-from .models import Table
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Table, Reservation
+from .forms import ReservationForm
+from django.db import transaction
+from .forms import FeedbackForm
 
-class HomeListView(ListView):
-    template_name = 'reservations/home.html'
-    context_object_name = 'tables'
-    model = Table
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+from .models import Table, Reservation
+from .forms import ReservationForm
+from django.utils import timezone
 
-    def get_queryset(self):
-        return Table.objects.filter(is_available=True)
+def home(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'reservation/home.html', {
+                'form': FeedbackForm(),
+                'success': True
+            })
+    else:
+        form = FeedbackForm()
 
+    return render(request, 'reservation/home.html', {
+        'form': form
+    })
 
-class ContactsListView(ListView):
-    template_name = 'reservations/contacts.html'
-    model = Table  # Можно заменить на другую модель, если contacts не связан с Table
-    context_object_name = 'contacts'
-
-    def get_queryset(self):
-        return Table.objects.all()  # Или другая логика для контактов
-
-
-class TableListView(ListView):
-    template_name = 'reservations/table_list.html'
-    model = Table
-    context_object_name = 'tables'
-
-    def get_queryset(self):
-        return Table.objects.all()
-
-
-class TableDetailView(DetailView):
-    template_name = 'reservations/table_detail.html'
-    model = Table
-    context_object_name = 'table'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['reservations'] = self.object.reservation_set.all()  # Связанные бронирования
-        return context
+def about(request):
+    return render(request, 'reservation/about.html')
 
 
-class TableCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'reservations/table_form.html'
-    model = Table
-    fields = ['table_number', 'capacity', 'is_available', 'location']
-    success_url = reverse_lazy('reservations:table_list')
+
+@login_required
+def booking_view(request):
+    available_tables = Table.objects.all()
+
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                res = form.save(commit=False)
+                res.user = request.user
+                conflict = Reservation.objects.filter(
+                    table=res.table,
+                    reservation_time=res.reservation_time
+                ).exists()
+
+                if conflict:
+                    messages.error(request, 'Это время уже занято.')
+                else:
+                    res.save()
+                    return redirect('reservation:booking_confirm')
+    else:
+        form = ReservationForm()
+
+    return render(request, 'reservation/booking.html', {
+        'form': form,
+        'available_tables': available_tables
+    })
 
 
-class TableDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'reservations/table_confirm_delete.html'
-    model = Table
-    success_url = reverse_lazy('reservations:table_list')
+@login_required
+def booking_confirm(request):
+    return render(request, 'reservation/booking_confirm.html')
+
+
+@login_required
+def cancel_reservation(request, pk):
+    res = get_object_or_404(Reservation, pk=pk, user=request.user)
+    res.status = 'cancelled'
+    res.save()
+    messages.success(request, 'Бронирование отменено.')
+    return redirect('users:profile')

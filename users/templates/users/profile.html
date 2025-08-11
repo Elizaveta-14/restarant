@@ -1,0 +1,39 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+<p>Здравствуйте, {{ request.user.username }}!</p>
+
+<h2>Мои бронирования</h2>
+<table>
+    <tr>
+        <th>Стол</th>
+        <th>Дата и время</th>
+        <th>Гости</th>
+        <th>Статус</th>
+        <th>Действия</th>
+    </tr>
+    {% for res in reservations %}
+    <tr>
+        <td>{{ res.table.number }}</td>
+        <td>{{ res.reservation_time }}</td>
+        <td>{{ res.number_of_guests }}</td>
+        <td>{{ res.get_status_display }}</td>
+        <td>
+            {% if res.status == 'booked' %}
+                <a href="{% url 'users:edit_reservation' res.pk %}">Изменить</a> |
+                <a href="{% url 'users:cancel_reservation' res.pk %}">Отменить</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">У вас пока нет бронирований</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,47 +1,47 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils import timezone
-
+from django.conf import settings  # вместо from django.contrib.auth.models import User
 
 
 class Table(models.Model):
-    table_number = models.IntegerField(unique=True)
-    capacity = models.IntegerField()
+    number = models.PositiveIntegerField(unique=True, verbose_name="Номер стола")
+    seats = models.PositiveIntegerField(verbose_name="Количество мест")
     is_available = models.BooleanField(default=True)
-    location = models.CharField(max_length=100, blank=True, null=True)  # Добавлено поле
-    image = models.ImageField(upload_to='tables/', blank=True, null=True)
 
     def __str__(self):
-        return f"Table {self.table_number}"
+        return f"Стол {self.number} ({self.seats} мест)"
 
 
 class Reservation(models.Model):
-    table = models.ForeignKey(Table, on_delete=models.CASCADE, related_name='reservations')
-    customer_name = models.CharField(max_length=100)
-    customer_phone = models.CharField(max_length=15)
-    reservation_time = models.DateTimeField()
-    number_of_guests = models.IntegerField(validators=[MinValueValidator(1)])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=20,
-        choices=[
-            ('pending', 'Pending'),
-            ('confirmed', 'Confirmed'),
-            ('cancelled', 'Cancelled'),
-        ],
-        default='pending'
-    )
+    STATUS_CHOICES = [
+        ('booked', 'Забронирован'),
+        ('cancelled', 'Отменён'),
+        ('completed', 'Завершён'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reservations', verbose_name="Пользователь")
+    table = models.ForeignKey(Table, on_delete=models.CASCADE, verbose_name="Стол")
+    reservation_time = models.DateTimeField(verbose_name="Время бронирования")
+    number_of_guests = models.PositiveIntegerField(verbose_name="Количество гостей")
+    customer_name = models.CharField(max_length=100, verbose_name="Имя клиента")
+    customer_phone = models.CharField(max_length=20, verbose_name="Телефон клиента")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='booked', verbose_name="Статус")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
     def __str__(self):
-        return f"Reservation for {self.customer_name} at {self.reservation_time}"
+        return f"Бронь стола {self.table.number} — {self.customer_name} ({self.reservation_time.strftime('%d.%m.%Y %H:%M')})"
 
-    def save(self, *args, **kwargs):
-        if self.reservation_time < timezone.now():
-            raise ValueError("Reservation time must be in the future.")
-        if self.number_of_guests > self.table.capacity:
-            raise ValueError("Number of guests exceeds table capacity.")
-        super().save(*args, **kwargs)
+
+class SiteContent(models.Model):
+    page = models.CharField(max_length=100, verbose_name="Страница")
+    section = models.CharField(max_length=100, verbose_name="Раздел")
+    title = models.CharField(max_length=200, verbose_name="Заголовок")
+    body = models.TextField(verbose_name="Текст")
+    image = models.ImageField(upload_to='site_images/', blank=True, null=True, verbose_name="Изображение")
 
     class Meta:
-        unique_together = ('table', 'reservation_time')
+        verbose_name = "Контент сайта"
+        verbose_name_plural = "Контент сайта"
+
+    def __str__(self):
+        return f"{self.page} — {self.section}"

@@ -1,78 +1,45 @@
-{% extends 'reservation/base.html'%}
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
 {% block content %}
-<html lang="en">
+<div class="text-center">
+    <img src="{% static 'reservation/img/restaurant_interior.jpg' %}" class="img-fluid mb-4" alt="Интерьер ресторана">
+    <h2>О нашем ресторане</h2>
+    <p>Мы предлагаем лучшие блюда и уютную атмосферу.</p>
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">Skystore</h1>
-    <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
-        продать</p>
+</div>
+<section>
+    <h2>Наши услуги</h2>
+    <ul>
+        <li>Бронирование столиков</li>
+        <li>Организация банкетов</li>
+        <li>Доставка еды</li>
+    </ul>
+</section>
+
+<hr class="my-5">
+
+
+<div class="container text-center">
+    <h2>Контакты</h2>
+    <p><strong>Адрес:</strong> г. Москва, ул. Вкусная, 12</p>
+    <p><strong>Телефон:</strong> <a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+    <p><strong>Email:</strong> <a href="mailto:info@restaurant.ru">info@restaurant.ru</a></p>
+
 </div>
 
 
-<div class="container">
-    <div class="container">
-    <div class="row text-center">
-        {% for product in object_list %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
-                    <a href="{% url 'catalog:products_detail' product.pk %}">{{ product.name }}</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Неограниченная лицензия</li>
-                        <li>- Поддержка</li>
-                        <li>- Установка на сервер</li>
-                        <li>- Получение обновлений</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="pt-4 my-md-5 pt-md-5 border-top">
-        <div class="row">
-            <div class="col-12 col-md">
-                SkyStore
-                <small class="d-block mb-3 text-muted">&copy; 2023</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Категории</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Рассылки</a></li>
-                    <li><a class="text-muted" href="#">Телеграм боты</a></li>
-                    <li><a class="text-muted" href="#">Полезные утилиты</a></li>
-                    <li><a class="text-muted" href="#">Веб-приложения</a></li>
-                    <li><a class="text-muted" href="#">Микросервисы</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Дополнительно</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Мы пишем</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>О нас</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="/contacts/">Контакты</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-</div>
-<script src="/static/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<section>
+    <h2>Обратная связь</h2>
+    {% if success %}
+        <p style="color:green;">Спасибо за сообщение! Мы скоро свяжемся с вами.</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+</section>
 {% endblock %}
