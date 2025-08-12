@@ -1,11 +1,17 @@
 from django import forms
 from .models import Reservation
-from django.db import models
 
-class FeedbackForm(forms.Form):
-    name = forms.CharField(max_length=100, label="Ваше имя")
-    email = forms.EmailField(label="Email")
-    message = forms.CharField(widget=forms.Textarea, label="Сообщение")
+from .models import Feedback
+
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['name', 'email', 'message']
+
+
+
 
 class ReservationForm(forms.ModelForm):
     class Meta:

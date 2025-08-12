@@ -1,9 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Table, Reservation
-from .forms import ReservationForm
-from django.db import transaction
+
 from .forms import FeedbackForm
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,21 +9,19 @@ from .models import Table, Reservation
 from .forms import ReservationForm
 from django.utils import timezone
 
+
 def home(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
             form.save()
-            return render(request, 'reservation/home.html', {
-                'form': FeedbackForm(),
-                'success': True
-            })
+            messages.success(request, 'Спасибо за ваше сообщение! Мы скоро свяжемся с вами.')
+            return redirect('reservation:home')
     else:
         form = FeedbackForm()
 
-    return render(request, 'reservation/home.html', {
-        'form': form
-    })
+    return render(request, 'reservation/home.html', {'form': form})
+
 
 def about(request):
     return render(request, 'reservation/about.html')
@@ -54,7 +47,7 @@ def booking_view(request):
                     messages.error(request, 'Это время уже занято.')
                 else:
                     res.save()
-                    return redirect('reservation:booking_confirm')
+                    return redirect('users:profile')
     else:
         form = ReservationForm()
 
@@ -76,3 +69,5 @@ def cancel_reservation(request, pk):
     res.save()
     messages.success(request, 'Бронирование отменено.')
     return redirect('users:profile')
+
+

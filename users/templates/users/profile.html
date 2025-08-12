@@ -5,7 +5,7 @@
 
 {% block content %}
 <h1>Личный кабинет</h1>
-<p>Здравствуйте, {{ request.user.username }}!</p>
+<p>Добро пожаловать в личный кабинет!</p>
 
 <h2>Мои бронирования</h2>
 <table>
@@ -14,7 +14,6 @@
         <th>Дата и время</th>
         <th>Гости</th>
         <th>Статус</th>
-        <th>Действия</th>
     </tr>
     {% for res in reservations %}
     <tr>
@@ -22,12 +21,7 @@
         <td>{{ res.reservation_time }}</td>
         <td>{{ res.number_of_guests }}</td>
         <td>{{ res.get_status_display }}</td>
-        <td>
-            {% if res.status == 'booked' %}
-                <a href="{% url 'users:edit_reservation' res.pk %}">Изменить</a> |
-                <a href="{% url 'users:cancel_reservation' res.pk %}">Отменить</a>
-            {% endif %}
-        </td>
+
     </tr>
     {% empty %}
     <tr>

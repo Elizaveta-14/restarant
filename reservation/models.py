@@ -1,10 +1,21 @@
 from django.db import models
-from django.conf import settings  # вместо from django.contrib.auth.models import User
+from django.conf import settings
+
+
+
+class Feedback(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.email})"
 
 
 class Table(models.Model):
-    number = models.PositiveIntegerField(unique=True, verbose_name="Номер стола")
-    seats = models.PositiveIntegerField(verbose_name="Количество мест")
+    number = models.IntegerField(verbose_name="Номер стола")
+    seats = models.IntegerField(verbose_name="Количество мест")
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
@@ -45,3 +56,8 @@ class SiteContent(models.Model):
 
     def __str__(self):
         return f"{self.page} — {self.section}"
+
+
+
+
+
