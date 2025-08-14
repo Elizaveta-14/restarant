@@ -27,4 +27,5 @@ mypy = "^1.17.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^6.2.1"
+black = "^25.1.0"
 

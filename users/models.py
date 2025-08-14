@@ -15,24 +15,25 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
         return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
     """Кастомный пользователь"""
+
     username = None
     email = models.EmailField(unique=True, verbose_name="Email")
-    phone = models.CharField(max_length=35, blank=True, null=True, verbose_name="Телефон")
+    phone = models.CharField(
+        max_length=35, blank=True, null=True, verbose_name="Телефон"
+    )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
 
     def __str__(self):
         return self.email
-
-
