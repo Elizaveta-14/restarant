@@ -1,0 +1,31 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+<p>Добро пожаловать в личный кабинет!</p>
+{% if reservations %}
+<h2>Мои бронирования</h2>
+<table>
+    <tr>
+        <th>Стол</th>
+        <th>Дата и время</th>
+        <th>Гости</th>
+        <th>Статус</th>
+    </tr>
+    {% for res in reservations %}
+    <tr>
+        <td>{{ res.table.number }}</td>
+        <td>{{ res.reservation_time }}</td>
+        <td>{{ res.number_of_guests }}</td>
+        <td>{{ res.get_status_display }}</td>
+
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>У вас пока нет бронирований.</p>
+{% endif %}
+{% endblock %}

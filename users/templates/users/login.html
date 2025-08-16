@@ -1,21 +1,16 @@
-{% extends 'reserve/base.html'%}
+{% extends 'reservation/base.html' %}
+{% block title %}Вход{% endblock %}
+
+
 {% block content %}
-
-
-<div class="album py-5 bg-body-tertiary">
-    <div class="container">
-        <h2>Войти</h2>
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        <div class="col">
-          <div class="card shadow-sm">
-            <form class="row" method="post">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <button type="submit">Войти</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="container my-5" style="max-width: 500px;">
+    <h1 class="mb-4">Вход</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Войти</button>
+    </form>
+    <p class="mt-3">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
 </div>
 {% endblock %}
+

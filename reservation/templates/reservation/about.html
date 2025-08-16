@@ -1,0 +1,43 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}О ресторане{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center">
+        <img src="{% static 'reservation/img/about_us.jpg' %}" class="img-fluid mb-4" alt="О нашем ресторане">
+        <h2>Наша история</h2>
+        <p>Наш ресторан родился из мечты создать место, где каждый гость чувствует себя как дома.
+Всё началось в 2010 году, когда наш основатель, вдохновлённый путешествиями по Европе, решил объединить в одном пространстве уют, вкусную еду и душевное общение.
+Мы начали с маленького зала на 20 мест и скромного меню, но с самого первого дня придерживались главного принципа — готовить только из свежих и качественных продуктов.
+Со временем наши блюда и атмосфера полюбились гостям, и ресторан стал расти: появились новые залы, летняя терраса и уникальная авторская кухня.</p>
+
+        <h3>Миссия и ценности</h3>
+        <p>Мы верим, что еда — это искусство, а гостеприимство — наша миссия.</p>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="text-center">
+        <h2>Наша команда</h2>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <img src="{% static 'reservation/img/chef.jpg' %}" class="rounded-circle mb-3" alt="Шеф-повар" width="200" height="200">
+                <h5>Алексей Иванов</h5>
+                <p class="text-muted">Шеф-повар</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <img src="{% static 'reservation/img/manager.jpg' %}" class="rounded-circle mb-3" alt="Менеджер" width="200" height="200">
+                <h5>Мария Смирнова</h5>
+                <p class="text-muted">Менеджер ресторана</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <img src="{% static 'reservation/img/waiter.jpg' %}" class="rounded-circle mb-3" alt="Официант" width="200" height="200">
+                <h5>Иван Петров</h5>
+                <p class="text-muted">Старший официант</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

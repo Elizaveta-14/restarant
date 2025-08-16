@@ -1,0 +1,57 @@
+{% load static %}
+
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ресторан{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <header class="text-white text-center py-5"
+          style="background-image: url('{% static 'reservation/img/header.jpg' %}');
+                 background-size: cover; background-position: center;">
+    <h1>Добро пожаловать в наш ресторан</h1>
+  </header>
+
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'reservation/img/logo.png' %}" alt="Логотип" height="40">
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:home' %}">Главная</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:about' %}">О ресторане</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reservation:booking' %}">Бронирование</a></li>
+          {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Личный кабинет</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Выйти</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Войти</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <main class="container py-4">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+
+  <footer class="bg-dark text-white text-center py-3">
+    <p>© 2025 Наш Ресторан</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

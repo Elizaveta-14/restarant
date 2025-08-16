@@ -1,0 +1,46 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h2 class="mb-4">Свяжитесь с нами</h2>
+            <p><strong>Адрес:</strong> г. Москва, ул. Примерная, д. 15</p>
+            <p><strong>Телефон:</strong> +7 (999) 123-45-67</p>
+            <p><strong>Email:</strong> info@myrestaurant.ru</p>
+            <p><strong>Время работы:</strong> Пн-Вс, 10:00 – 23:00</p>
+
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Ваше имя</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Введите имя">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Ваш Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Введите email">
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Сообщение</label>
+                    <textarea id="message" name="message" rows="4" class="form-control" placeholder="Введите сообщение"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <img src="{% static 'reservation/img/restaurant_location.jpg' %}" alt="Наш ресторан" class="img-fluid rounded mb-3">
+            <div class="ratio ratio-16x9">
+                <!-- Встраиваем Google карту -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!..."
+                        width="600" height="450" style="border:0;"
+                        allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

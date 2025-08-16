@@ -1,0 +1,45 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <img src="{% static 'reservation/img/restaurant_interior.jpg' %}" class="img-fluid mb-4" alt="Интерьер ресторана">
+    <h2>О нашем ресторане</h2>
+    <p>Мы предлагаем лучшие блюда и уютную атмосферу.</p>
+
+</div>
+<section>
+    <h2>Наши услуги</h2>
+    <ul>
+        <li>Бронирование столиков</li>
+        <li>Организация банкетов</li>
+        <li>Доставка еды</li>
+    </ul>
+</section>
+
+<hr class="my-5">
+
+
+<div class="container text-center">
+    <h2>Контакты</h2>
+    <p><strong>Адрес:</strong> г. Москва, ул. Вкусная, 12</p>
+    <p><strong>Телефон:</strong> <a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+    <p><strong>Email:</strong> <a href="mailto:info@restaurant.ru">info@restaurant.ru</a></p>
+
+</div>
+
+
+<section>
+    <h2>Обратная связь</h2>
+    {% if success %}
+        <p style="color:green;">Спасибо за сообщение! Мы скоро свяжемся с вами.</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+</section>
+{% endblock %}

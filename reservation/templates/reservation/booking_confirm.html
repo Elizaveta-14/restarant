@@ -1,0 +1,16 @@
+{% extends 'reservation/base.html' %}
+{% block title %}Подтверждение{% endblock %}
+{% block content %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подтверждение бронирования</title>
+</head>
+<body>
+<h1>Ваш столик успешно забронирован!</h1>
+<p>Спасибо, что выбрали наш ресторан.</p>
+<a href="{% url 'reservation:home' %}">На главную</a>
+</body>
+</html>
+
+{% endblock %}
