@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+from django.core.exceptions import ValidationError
 
 class Feedback(models.Model):
     name = models.CharField(max_length=100)
@@ -44,6 +44,17 @@ class Reservation(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    def clean(self):
+        if self.number_of_guests > self.table.seats:
+            raise ValidationError(
+                f"Для этого столика максимум {self.table.seats} гостей."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"Бронь стола {self.table.number} — {self.customer_name} ({self.reservation_time.strftime('%d.%m.%Y %H:%M')})"

@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.db import transaction
 from .models import Table, Reservation
 from .forms import ReservationForm
-from django.utils import timezone
 
 
 def home(request):

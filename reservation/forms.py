@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reservation
+from .models import Reservation , Table
 
 from .models import Feedback
 
@@ -34,3 +34,5 @@ class ReservationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["reservation_time"].input_formats = ["%Y-%m-%dT%H:%M"]
+
+        self.fields["table"].queryset = Table.objects.filter(is_available=True)
